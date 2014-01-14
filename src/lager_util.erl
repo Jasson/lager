@@ -353,13 +353,12 @@ calculate_next_rotation([{date, Date}|T], {{Year, Month, Day}, _} = Now) ->
     NewNow = calendar:gregorian_seconds_to_datetime(Seconds),
     calculate_next_rotation(T, NewNow).
 
-
 trace_filter(Query) ->
     trace_filter(?DEFAULT_TRACER, Query).
 
 %% TODO: Support multiple trace modules 
 trace_filter(Module, Query) when Query == none; Query == [] ->
-    trace_filter(Module, glc:null(false));
+    {ok, _} = glc:compile(Module, glc_lib:reduce(glc:null(false)));
 trace_filter(Module, Query) when is_list(Query) ->
     trace_filter(Module, glc_lib:reduce(trace_any(Query)));
 trace_filter(Module, Query) ->
